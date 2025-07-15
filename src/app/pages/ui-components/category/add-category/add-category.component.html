@@ -1,0 +1,28 @@
+<div class="add-note-dialog">
+  <h2 mat-dialog-title class="text-center text-primary fw-bold mb-3">📦 Create New Category</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" mat-dialog-content class="form-body">
+    <mat-form-field appearance="outline" class="w-100 mb-4">
+      <mat-label>Category Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error *ngIf="form.get('name')?.invalid">Name is required</mat-error>
+    </mat-form-field>
+
+    <div class="upload-container mb-4">
+      <label class="upload-label">
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+        <span>Select Image</span>
+      </label>
+      <mat-error *ngIf="form.get('image')?.invalid && form.touched">Image is required</mat-error>
+    </div>
+
+    <div *ngIf="imagePreview" class="preview mb-4">
+      <img [src]="imagePreview" alt="Preview" />
+    </div>
+
+    <div mat-dialog-actions class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button type="button" color="primary" (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Create</button>
+    </div>
+  </form>
+</div>

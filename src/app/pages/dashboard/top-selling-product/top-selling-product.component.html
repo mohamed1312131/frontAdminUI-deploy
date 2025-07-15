@@ -1,0 +1,66 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <mat-card-title>Top Selling Products</mat-card-title>
+
+      <div class="d-flex gap-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Year</mat-label>
+          <mat-select [(value)]="selectedYear" (selectionChange)="loadData()">
+            <mat-option *ngFor="let y of [2024,2025,2026]" [value]="y">{{ y }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Month</mat-label>
+          <mat-select [(value)]="selectedMonth" (selectionChange)="loadData()">
+            <mat-option *ngFor="let m of months; index as i" [value]="i + 1">{{ m }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+    <table mat-table [dataSource]="dataSource" class="w-100 m-t-16">
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef>Image</th>
+        <td mat-cell *matCellDef="let row">
+          <img [src]="row.imageUrl" width="40" class="rounded" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let row">{{ row.productName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalSalesCount">
+        <th mat-header-cell *matHeaderCellDef>Sales</th>
+        <td mat-cell *matCellDef="let row">{{ row.totalSalesCount }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalRevenue">
+        <th mat-header-cell *matHeaderCellDef>Revenue</th>
+        <td mat-cell *matCellDef="let row">${{ row.totalRevenue | number:'1.0-0' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalStock">
+        <th mat-header-cell *matHeaderCellDef>Total Stock</th>
+        <td mat-cell *matCellDef="let row">{{ row.totalStock }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="stockLeftBySize">
+        <th mat-header-cell *matHeaderCellDef>Stock by Size</th>
+        <td mat-cell *matCellDef="let row">
+          <div *ngFor="let key of (row.stockLeftBySize | keyvalue)">
+            {{ key.key }}: {{ key.value }}
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

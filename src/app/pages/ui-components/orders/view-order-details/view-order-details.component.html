@@ -1,0 +1,214 @@
+
+<!-- view-order-details.component.html -->
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="order-badge">
+        <mat-icon class="badge-icon">receipt_long</mat-icon>
+        <div class="badge-text">
+          <span class="order-label">Order</span>
+          <span class="order-number">#{{ data.orderId }}</span>
+        </div>
+      </div>
+      <div class="status-container">
+        <mat-chip selected [ngClass]="['status-chip', data.status?.toLowerCase()]">
+          
+          {{ data.status }}
+        </mat-chip>
+      </div>
+    </div>
+    <button mat-icon-button mat-dialog-close class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Customer Section -->
+    <mat-card class="info-card customer-card">
+      <mat-card-header class="card-header">
+        <mat-icon mat-card-avatar class="avatar-icon customer-avatar">person</mat-icon>
+        <mat-card-title class="card-title">Customer Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="info-row">
+          <div class="info-item">
+            <mat-icon class="info-icon">badge</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Full Name</span>
+              <span class="info-value">{{ data.firstName }} {{ data.lastName }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">email</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ data.email }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-item">
+            <mat-icon class="info-icon">phone</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Phone</span>
+              <span class="info-value">{{ data.phone }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon class="info-icon">local_shipping</mat-icon>
+            <div class="info-text">
+              <span class="info-label">Delivery Status</span>
+              <mat-chip [color]="data.delivered ? 'primary' : 'warn'" selected class="delivery-chip">
+                <mat-icon matChipLeadingIcon>{{ data.delivered ? 'check_circle' : 'pending' }}</mat-icon>
+                {{ data.delivered ? 'Delivered' : 'Pending' }}
+              </mat-chip>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Shipping Address -->
+    <mat-card class="info-card address-card">
+      <mat-card-header class="card-header">
+        <mat-icon mat-card-avatar class="avatar-icon address-avatar">location_on</mat-icon>
+        <mat-card-title class="card-title">Shipping Address</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="address-content">
+          <mat-icon class="address-icon">home</mat-icon>
+          <div class="address-text">{{ data.address }}, {{ data.city }}, {{ data.region }} - {{ data.zipCode }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Order Items -->
+    <mat-card class="info-card items-card">
+      <mat-card-header class="card-header">
+        <mat-icon mat-card-avatar class="avatar-icon items-avatar">inventory_2</mat-icon>
+        <mat-card-title class="card-title">
+          Order Items
+          <span class="item-count" [matBadge]="data.products?.length" matBadgeColor="accent">
+            <mat-icon class="badge-icon">shopping_bag</mat-icon>
+          </span>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="items-list">
+          <div *ngFor="let item of data.products; let i = index" class="item-row">
+            <div class="item-content">
+              <div class="item-icon-container">
+                <mat-icon class="item-icon">checkroom</mat-icon>
+              </div>
+              <div class="item-details">
+                <div class="item-name">{{ item.productName }}</div>
+                <div class="item-specs">
+                  <span class="item-size">Size: {{ item.size }}</span>
+                  <span class="item-quantity">Qty: {{ item.quantity }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-divider *ngIf="i < data.products.length - 1" class="item-divider"></mat-divider>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Payment Summary -->
+    <mat-card class="info-card payment-card">
+      <mat-card-header class="card-header">
+        <mat-icon mat-card-avatar class="avatar-icon payment-avatar">payments</mat-icon>
+        <mat-card-title class="card-title">Payment Summary</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="payment-details">
+          <div class="payment-row">
+            <span class="payment-label">Subtotal</span>
+            <span class="payment-value">${{ data.total.toFixed(2) }}</span>
+          </div>
+          <mat-divider class="payment-divider"></mat-divider>
+          <div class="payment-row total-row">
+            <span class="payment-label">Grand Total</span>
+            <span class="payment-value total-value">${{ data.grandTotal.toFixed(2) }}</span>
+          </div>
+          <div class="order-date">
+            <mat-icon class="date-icon">schedule</mat-icon>
+            <span class="date-text">Ordered on {{ data.createdAt | date: 'MMM dd, yyyy - HH:mm' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Optional Note -->
+    <mat-card class="info-card note-card" *ngIf="data.note">
+      <mat-card-header class="card-header">
+        <mat-icon mat-card-avatar class="avatar-icon note-avatar">note</mat-icon>
+        <mat-card-title class="card-title">Order Note</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="note-content">
+          <mat-icon class="note-icon">format_quote</mat-icon>
+          <p class="note-text">{{ data.note }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions class="dialog-actions">
+    <div class="status-update-section">
+      <mat-form-field appearance="outline" class="status-select">
+        <mat-label>Update Status</mat-label>
+        <mat-select 
+          [(value)]="selectedStatus" 
+          (selectionChange)="onStatusChange()"
+          [disabled]="isUpdatingStatus">
+          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+            <div class="status-option">
+              <mat-icon>{{ getStatusIcon(option.value) }}</mat-icon>
+              <span>{{ option.label }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <div class="status-indicator" *ngIf="hasStatusChanged()">
+        <mat-icon class="change-icon">arrow_forward</mat-icon>
+        <span class="change-text">Status will be updated</span>
+      </div>
+      
+      <div class="loading-indicator" *ngIf="isUpdatingStatus">
+        <mat-spinner diameter="20"></mat-spinner>
+        <span>Updating...</span>
+      </div>
+    </div>
+    
+    <button mat-raised-button color="primary" mat-dialog-close class="action-button">
+      <mat-icon>check</mat-icon>
+      Done
+    </button>
+  </mat-dialog-actions>
+</div>
+
+<!-- Confirmation Dialog Template (separate component) -->
+<div class="confirmation-dialog" *ngIf="false">
+  <h2 mat-dialog-title>
+    <mat-icon>warning</mat-icon>
+    Confirm Status Update
+  </h2>
+  <mat-dialog-content>
+    <p>Are you sure you want to update order <strong>#{{ data.orderId }}</strong> status from 
+    <strong>{{ data.currentStatus }}</strong> to <strong>{{ data.newStatus }}</strong>?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close="false">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+      <mat-icon>check</mat-icon>
+      Confirm Update
+    </button>
+  </mat-dialog-actions>
+</div>

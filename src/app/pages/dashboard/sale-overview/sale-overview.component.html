@@ -1,0 +1,39 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="d-flex w-100">
+      <mat-card-title>Sales Overview</mat-card-title>
+      <div class="m-l-auto">
+        <mat-form-field class="theme-select" appearance="outline">
+          <mat-label>Year</mat-label>
+          <mat-select [(value)]="selectedYear" (selectionChange)="loadSalesByYear(selectedYear)">
+            <mat-option *ngFor="let year of availableYears" [value]="year">
+              {{ year }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div *ngIf="isChartReady; else loading">
+      <apx-chart
+        [series]="salesOverviewChart.series"
+        [dataLabels]="salesOverviewChart.dataLabels"
+        [chart]="salesOverviewChart.chart"
+        [legend]="salesOverviewChart.legend"
+        [xaxis]="salesOverviewChart.xaxis"
+        [yaxis]="salesOverviewChart.yaxis"
+        [grid]="salesOverviewChart.grid"
+        [stroke]="salesOverviewChart.stroke"
+        [tooltip]="salesOverviewChart.tooltip"
+        [plotOptions]="salesOverviewChart.plotOptions"
+      ></apx-chart>
+    </div>
+
+    <ng-template #loading>
+      <div class="text-center py-4">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="mat-body-1 mt-2">Loading chart...</p>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

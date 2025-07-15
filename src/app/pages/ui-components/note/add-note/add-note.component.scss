@@ -1,0 +1,55 @@
+.add-note-dialog {
+  padding: 16px;
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .upload-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f3f3f3;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  .preview {
+    display: flex;
+    justify-content: center;
+
+    img {
+      max-width: 200px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  mat-dialog-actions {
+    margin-top: 1rem;
+  }
+}

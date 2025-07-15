@@ -1,0 +1,24 @@
+.admin-panel {
+  .mat-form-field {
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .text-success {
+    color: green;
+    font-weight: 600;
+  }
+
+  .text-danger {
+    color: red;
+    font-weight: 600;
+  }
+
+  img {
+    object-fit: cover;
+    border-radius: 4px;
+  }
+}

@@ -1,0 +1,77 @@
+<div class="admin-panel p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Manage Carousels</h2>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">Create New Carousel</button>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-100 mb-3">
+    <mat-label>Search</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search carousel..." />
+  </mat-form-field>
+
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+      <!-- Image Column -->
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef>Image</th>
+        <td mat-cell *matCellDef="let element">
+          <img [src]="element.imageUrl" alt="img" width="50" height="50" style="object-fit: cover; border-radius: 4px;" />
+        </td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          <span [ngClass]="{ 'text-success': element.status, 'text-danger': !element.status }">
+            {{ element.status ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="onEdit(element.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Toggle Enable/Disable -->
+          <ng-container *ngIf="element.status; else enableButton">
+            <button mat-icon-button color="accent" (click)="onDisable(element.id)">
+              <mat-icon>block</mat-icon>
+            </button>
+          </ng-container>
+          <ng-template #enableButton>
+            <button mat-icon-button color="primary" (click)="onEnable(element.id)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          </ng-template>
+
+          <!-- Delete -->
+          <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Table Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

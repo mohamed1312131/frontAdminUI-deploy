@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Create New Carousel</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" mat-dialog-content class="py-3">
+  <mat-form-field appearance="outline" class="w-100 mb-3">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" />
+    <mat-error *ngIf="form.get('title')?.invalid">Title is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-100 mb-3">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+    <mat-error *ngIf="form.get('description')?.invalid">Description is required</mat-error>
+  </mat-form-field>
+
+  <div class="mb-3">
+    <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+    <mat-error *ngIf="form.get('image')?.invalid">Image is required</mat-error>
+  </div>
+
+  <div *ngIf="imagePreview" class="preview mb-3">
+    <img [src]="imagePreview" width="120" height="80" alt="Preview" />
+  </div>
+
+  <div mat-dialog-actions class="d-flex justify-content-end gap-2">
+    <button mat-stroked-button type="button" (click)="dialogRef.close()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Create</button>
+  </div>
+</form>

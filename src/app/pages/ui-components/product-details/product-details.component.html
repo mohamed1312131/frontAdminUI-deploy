@@ -1,0 +1,94 @@
+<mat-dialog-content class="dialog-content">
+
+  <!-- Header -->
+  <div class="header">
+    <h2 class="title">{{ data.title }}</h2>
+    <button mat-icon-button (click)="close()" aria-label="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+
+  <!-- Description -->
+  <section class="section">
+    <h3 class="section-title">Description</h3>
+    <p class="description">{{ data.description }}</p>
+  </section>
+  <mat-divider></mat-divider>
+
+  <!-- Key Info Grid -->
+  <section class="section info-grid">
+   <!-- <div class="info-card">
+      <div class="info-label">Category</div>
+      <div class="info-value">{{ data.category }}</div>
+    </div> -->
+    <div class="info-card">
+      <div class="info-label">Price</div>
+      <div class="info-value">{{ data.price | currency:'':'':'1.2-2' }} DT</div>
+    </div>
+    <div class="info-card" *ngIf="data.oldPrice">
+      <div class="info-label">Old Price</div>
+      <div class="info-value">{{ data.oldPrice | currency:'':'':'1.2-2' }} DT</div>
+    </div>
+  </section>
+  <mat-divider></mat-divider>
+
+ 
+
+  <!-- Additional Info -->
+  <section class="section" *ngIf="data.additionalInfo">
+    <h3 class="section-title">Additional Info</h3>
+    <p class="description">{{ data.additionalInfo }}</p>
+  </section>
+  <mat-divider></mat-divider>
+
+  <!-- Variants -->
+  <!-- Variants -->
+  <section class="section">
+    <h3 class="section-title">Variants</h3>
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let v of data.variants">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span class="color-dot" [style.backgroundColor]="v.color"></span>
+            {{ v.color }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <!-- Larger Images -->
+        <div class="images images-large">
+          <img *ngFor="let url of v.images"
+               [src]="url"
+               class="variant-img"
+               alt="Variant {{ v.color }}">
+        </div>
+
+        <!-- Sizes + Stock Details -->
+        <table class="sizes-table">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Total Stock</th>
+              <th>Sold</th>
+              <th>Remaining</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of v.sizes">
+              <td>{{ s.size }}</td>
+              <td>{{ s.totalStock }}</td>
+              <td>{{ s.sold }}</td>
+              <td>{{ s.stock }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" (click)="close()">Close</button>
+</mat-dialog-actions>

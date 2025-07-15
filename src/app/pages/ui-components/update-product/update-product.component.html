@@ -1,0 +1,129 @@
+<div mat-dialog-title class="dialog-header">
+  <h2>Edit Product: {{ product.title }}</h2>
+  <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content [formGroup]="productForm">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Product Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required />
+        <mat-error *ngIf="productForm.get('title')?.hasError('required')">Title is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Price ($)</mat-label>
+          <input matInput type="number" formControlName="price" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Old Price ($)</mat-label>
+          <input matInput type="number" formControlName="oldPrice" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="categoryId" required>
+            <mat-option *ngFor="let cat of allCategories" [value]="cat.id">{{ cat.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Additional Information</mat-label>
+        <textarea matInput formControlName="additionalInfo"></textarea>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Add Variant Button -->
+  <div class="add-variant-container">
+    <button mat-stroked-button color="accent" (click)="addVariant()">
+      <mat-icon>add</mat-icon> Add New Variant
+    </button>
+  </div>
+
+  <!-- Variant Expansion Panels -->
+  <div formArrayName="variants">
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i" class="variant-panel" [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Variant: {{ variant.get('color')?.value || 'New Variant' }}</mat-panel-title>
+          <mat-panel-description>
+            <button mat-icon-button color="warn" (click)="removeVariant(i)" aria-label="Remove Variant">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Color</mat-label>
+            <input matInput formControlName="color" required />
+          </mat-form-field>
+
+          <div class="file-input-container">
+            <button type="button" mat-stroked-button (click)="fileInput.click()">
+  <mat-icon>upload_file</mat-icon> Upload Images
+</button>
+<input hidden #fileInput type="file" multiple (change)="onFileSelected($event, i)" />
+
+          </div>
+        </div>
+
+        <!-- Image Previews -->
+        <div class="image-preview-container">
+          <div *ngFor="let img of variant.get('images')?.value" class="image-preview">
+            <img [src]="img" alt="Product image" />
+            <button mat-icon-button class="remove-image-btn" (click)="removeImage(i, img)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <h4>Sizes and Stock</h4>
+        <div formArrayName="sizes">
+          <div *ngFor="let size of getSizes(i).controls; let j = index" [formGroupName]="j" class="form-row size-row">
+            <mat-form-field appearance="outline" class="size-field">
+              <mat-label>Size</mat-label>
+              <input matInput formControlName="size" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="stock-field">
+              <mat-label>Stock</mat-label>
+              <input matInput type="number" formControlName="stock" required />
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" (click)="removeSize(i, j)" aria-label="Remove size">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button mat-stroked-button color="primary" (click)="addSize(i)">
+          <mat-icon>add</mat-icon> Add Size
+        </button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="isLoading || productForm.invalid">
+    <span *ngIf="!isLoading">Save Changes</span>
+    <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+  </button>
+</mat-dialog-actions>

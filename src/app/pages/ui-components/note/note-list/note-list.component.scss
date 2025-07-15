@@ -1,0 +1,43 @@
+.admin-panel {
+  padding: 1rem;
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  // ✅ Image styling
+  img {
+    object-fit: cover;
+    border-radius: 4px;
+    width: 50px;
+    height: 50px;
+  }
+
+  // ✅ Status colors
+  .text-success {
+    color: green;
+    font-weight: 600;
+  }
+
+  .text-danger {
+    color: red;
+    font-weight: 600;
+  }
+
+  // ✅ Truncate long description text
+  ::ng-deep td.mat-cell.description-cell {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ✅ Space between icon buttons
+  .mat-icon-button {
+    margin-right: 4px;
+  }
+}

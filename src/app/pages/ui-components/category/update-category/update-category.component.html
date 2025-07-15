@@ -1,0 +1,40 @@
+<div class="update-category-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon color="primary" class="me-2">edit</mat-icon> Update Category
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" mat-dialog-content class="form-body">
+
+    <mat-form-field appearance="outline" class="w-100 mb-4">
+      <mat-label><mat-icon class="me-1">category</mat-icon> Category Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error *ngIf="form.get('name')?.invalid">Name is required</mat-error>
+    </mat-form-field>
+
+    <div class="upload-container mb-4">
+      <label class="upload-label">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Select New Image</span>
+        <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+      </label>
+      <mat-error *ngIf="isImageMissing() && form.touched">Image is required</mat-error>
+    </div>
+
+    <div *ngIf="imagePreview" class="preview d-flex align-items-center gap-3 mb-4">
+      <img [src]="imagePreview" alt="Preview" />
+      <button mat-mini-fab color="warn" type="button" (click)="removeImage()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+
+    <div mat-dialog-actions class="d-flex justify-content-end gap-2 mt-3">
+      <button mat-stroked-button color="warn" type="button" (click)="dialogRef.close()">
+        <mat-icon>cancel</mat-icon> Cancel
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || isImageMissing()">
+        <mat-icon>save</mat-icon> Update
+      </button>
+    </div>
+
+  </form>
+</div>

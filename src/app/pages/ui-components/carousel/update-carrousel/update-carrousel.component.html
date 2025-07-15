@@ -1,0 +1,54 @@
+<h2 mat-dialog-title class="dialog-title">Update Carousel</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <div class="form-body">
+
+    <!-- Title -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" required />
+      <mat-error *ngIf="form.get('title')?.hasError('required') && form.get('title')?.touched">
+        Title is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="3" formControlName="description" required></textarea>
+      <mat-error *ngIf="form.get('description')?.hasError('required') && form.get('description')?.touched">
+        Description is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Image -->
+    <div>
+      <label class="fw-bold mb-1 d-block">Image <span class="text-danger">*</span></label>
+
+      <div *ngIf="imagePreview" class="image-wrapper">
+        <img [src]="imagePreview" alt="Preview" class="image-preview" />
+        <button mat-icon-button color="warn" (click)="removeImage()" class="remove-btn" type="button">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="!imagePreview" class="mt-2">
+        <input type="file" (change)="onFileChange($event)" accept="image/*" />
+        <mat-error *ngIf="form.get('image')?.hasError('required') && form.get('image')?.touched">
+          Image is required
+        </mat-error>
+      </div>
+    </div>
+
+    <!-- Status toggle -->
+    <mat-slide-toggle formControlName="status" class="mt-3">Enabled</mat-slide-toggle>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      Update
+    </button>
+  </div>
+</form>

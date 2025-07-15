@@ -1,0 +1,35 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <mat-card-title>Sales by Category</mat-card-title>
+      <div class="d-flex gap-2">
+        <mat-form-field appearance="outline" class="theme-select">
+          <mat-label>Year</mat-label>
+          <mat-select [(value)]="selectedYear" (selectionChange)="onYearChange($event.value)">
+            <mat-option *ngFor="let year of availableYears" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="theme-select">
+          <mat-label>Month</mat-label>
+          <mat-select [(value)]="selectedMonth" (selectionChange)="onMonthChange($event.value)">
+            <mat-option *ngFor="let m of months; let i = index" [value]="i">{{ m }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-4">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="!isLoading">
+      <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [labels]="chartOptions.labels"
+        [responsive]="chartOptions.responsive"
+      ></apx-chart>
+    </div>
+  </mat-card-content>
+</mat-card>

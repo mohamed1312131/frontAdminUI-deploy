@@ -1,0 +1,156 @@
+.dialog-content {
+  padding: 0;
+  max-height: 75vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #f7f7f7;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  .title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+  }
+}
+
+mat-divider {
+  margin: 0;
+  background-color: #e0e0e0;
+}
+
+/* Sections */
+.section {
+  padding: 1rem 1.5rem;
+
+  .section-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #424242;
+  }
+  .description {
+    margin: 0;
+    line-height: 1.6;
+    color: #555;
+  }
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+
+  .info-card {
+    background: #fafafa;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    .info-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #777;
+    }
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+/* Tags as badges */
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  .badge {
+    padding: 4px 10px;
+    background-color: #eceff1;
+    color: #37474f;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #cfd8dc;
+    }
+  }
+}
+
+/* Images row */
+.images {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0.5rem 1.5rem;
+
+  .variant-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* Larger images variant */
+.images-large {
+  padding: 1rem 1.5rem;
+
+  .variant-img {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Variant color dot */
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid #ccc;
+}
+
+/* Sizes table */
+.sizes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 1.5rem 1rem;
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+    color: #333;
+  }
+  tr + tr td {
+    border-top: 1px solid #e0e0e0;
+  }
+}

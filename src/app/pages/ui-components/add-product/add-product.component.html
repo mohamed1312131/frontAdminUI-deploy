@@ -1,0 +1,222 @@
+<!-- =======================
+     add-product.component.html
+     ======================= -->
+
+<div class="container my-4">
+  <mat-card class="mat-elevation-z8">
+    <mat-card-header>
+      <mat-card-title>Create a New Product</mat-card-title>
+      <mat-card-subtitle>Follow the steps to define your product and its variants</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <mat-horizontal-stepper [linear]="true" #stepper>
+
+          <!-- Step 1: Core Details -->
+          <mat-step mat-step label="Core Details" [stepControl]="coreInfo" formGroupName="coreInfo">
+            <div class="step-container" [formGroup]="coreInfo">
+              <div class="row">
+                <div class="col-12">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title*</mat-label>
+                    <input matInput formControlName="title" required>
+                    <mat-error *ngIf="coreInfo.get('title')?.hasError('required')">Title is required</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-12">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Description*</mat-label>
+                    <textarea matInput formControlName="description" rows="4" required></textarea>
+                    <mat-error *ngIf="coreInfo.get('description')?.hasError('required')">Description is required</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+  <mat-label>Category*</mat-label>
+  <mat-select formControlName="categoryId" required>
+    <mat-option *ngFor="let category of allCategories" [value]="category.id">
+      {{ category.name }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="coreInfo.get('categoryId')?.hasError('required')">Category is required</mat-error>
+</mat-form-field>
+
+                </div>
+
+                <div class="col-12 mt-3">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Additional Info</mat-label>
+                    <textarea matInput formControlName="additionalInfo" rows="3"></textarea>
+                  </mat-form-field>
+                </div>
+
+                <!-- Size Guide Image Upload -->
+                <div class="col-12 mt-3">
+                  <div class="size-guide-upload">
+                    <h4 class="mb-2">Size Guide Image (Optional)</h4>
+                    <p class="text-muted mb-3">Upload an image to help customers understand sizing</p>
+                    
+                    <div *ngIf="!sizeGuidePreviewUrl" class="upload-area">
+                      <input type="file" #sizeGuideInput (change)="onSizeGuideFileSelected($event)" 
+                             accept="image/*" style="display: none;">
+                      <button type="button" mat-stroked-button (click)="sizeGuideInput.click()" class="upload-btn">
+                        <mat-icon>cloud_upload</mat-icon>
+                        Choose Size Guide Image
+                      </button>
+                    </div>
+                    
+                    <div *ngIf="sizeGuidePreviewUrl" class="preview-container">
+                      <div class="image-preview">
+                        <img [src]="sizeGuidePreviewUrl" alt="Size Guide Preview" class="preview-image">
+                        <button type="button" mat-icon-button color="warn" 
+                                (click)="removeSizeGuideImage()" class="remove-btn">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="stepper-actions">
+              <button type="button"
+                mat-raised-button
+                color="primary"
+                matStepperNext>Next <mat-icon>chevron_right</mat-icon></button>
+            </div>
+          </mat-step>
+
+          <!-- Step 2: Variants -->
+          <mat-step [stepControl]="variants" label="Variants & Stock">
+            <div class="step-container">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h3 class="m-0">Product Variants</h3>
+                  <p class="text-muted m-0">Add each color variant and its corresponding sizes, stock, and images.</p>
+                </div>
+                <button mat-raised-button color="accent" type="button" (click)="addNewVariant()">
+                  <mat-icon>add</mat-icon> Add New Color
+                </button>
+              </div>
+
+              <mat-accordion multi="true" formArrayName="variants" class="variant-accordion">
+                <mat-expansion-panel *ngFor="let variant of variants.controls; let i = index" [formGroupName]="i" [expanded]="true">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <strong>{{ variants.at(i).get('color')?.value || 'New Color Variant' }}</strong>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      Total Stock: {{ getColorTotalStock(i) }}
+                      <button mat-icon-button color="warn" class="ms-auto" (click)="removeVariant(i); $event.stopPropagation()">
+                        <mat-icon>delete_forever</mat-icon>
+                      </button>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <div class="row variant-content">
+                    <div class="col-lg-6">
+                      <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Color Name*</mat-label>
+                        <input matInput formControlName="color" required>
+                        <mat-error *ngIf="variants.at(i).get('color')?.hasError('required')">Color name is required</mat-error>
+                      </mat-form-field>
+
+                      <h4 class="mt-3">Sizes & Stock</h4>
+                      <div formArrayName="sizes">
+                        <div *ngFor="let size of sizes(i).controls; let j = index" [formGroupName]="j" class="size-stock-row">
+                          <mat-form-field appearance="outline" class="flex-grow-1">
+                            <mat-label>Size*</mat-label>
+                            <input matInput formControlName="size" required>
+                          </mat-form-field>
+                          <mat-form-field appearance="outline" class="stock-input">
+                            <mat-label>Stock*</mat-label>
+                            <input matInput type="number" formControlName="stock" required min="1">
+                          </mat-form-field>
+                          <button mat-icon-button color="warn" type="button" (click)="removeSize(i, j)">
+                            <mat-icon>remove_circle_outline</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                      <button mat-stroked-button color="primary" type="button" (click)="addSize(i)">
+                        <mat-icon>add</mat-icon> Add Size
+                      </button>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <h4 class="mt-3 mt-lg-0">Images for this Color</h4>
+                      <div class="drop-zone"
+                           (drop)="onDrop($event, i)" (dragover)="onDragOver($event, i)" (dragleave)="onDragLeave($event, i)"
+                           [class.drag-over]="isDragging[i]">
+                        <mat-icon class="drop-icon">add_photo_alternate</mat-icon>
+                        <p>Drag & Drop images here or click to browse</p>
+                        <input #fileInput type="file" (change)="onImageSelect($event, i)" multiple accept="image/*" hidden>
+                        <button mat-stroked-button type="button" (click)="fileInput.click()">Choose Files</button>
+                      </div>
+
+                      <div class="image-preview-container mt-3" *ngIf="(previewUrls?.[i]?.length ?? 0) > 0">
+                        <div class="image-preview" *ngFor="let file of previewUrls[i]; let imgIndex = index">
+                          <img [src]="previewUrls[i][imgIndex]" alt="Preview">
+                          <button mat-mini-fab color="warn" (click)="removeImage(i, imgIndex)" class="remove-image-btn">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div class="stepper-actions">
+              <button mat-button matStepperPrevious>Back</button>
+              <button type="button"
+        mat-raised-button
+        color="primary"
+        matStepperNext>>Next <mat-icon>chevron_right</mat-icon></button>
+            </div>
+          </mat-step>
+
+          <!-- Step 3: Pricing -->
+          <mat-step [stepControl]="pricing" label="Pricing">
+            <div class="step-container" [formGroup]="pricing">
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Base Price*</mat-label>
+                    <input matInput type="number" formControlName="price" min="0" required>
+                    <mat-error *ngIf="pricing.get('price')?.hasError('required')">Price is required</mat-error>
+                    <mat-error *ngIf="pricing.get('price')?.hasError('min')">Price must be positive</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Old Price (Optional)</mat-label>
+                    <input matInput type="number" formControlName="oldPrice" min="0">
+                    <mat-error *ngIf="pricing.get('oldPrice')?.hasError('min')">Price must be positive</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            <div class="stepper-actions">
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid || submitting">
+                <div *ngIf="!submitting; else loading">
+                  <mat-icon>save</mat-icon> Submit Product
+                </div>
+                <ng-template #loading>
+                  <mat-progress-spinner [diameter]="24" mode="indeterminate"></mat-progress-spinner>
+                </ng-template>
+              </button>
+            </div>
+          </mat-step>
+
+        </mat-horizontal-stepper>
+      </form>
+    </mat-card-content>
+
+    <mat-card-footer class="p-3 bg-light text-end" *ngIf="variantsLength > 0">
+      <strong>Total Product Stock: {{ getProductTotalStock() }} units</strong>
+    </mat-card-footer>
+  </mat-card>
+</div>

@@ -1,0 +1,73 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="dialog-title">Send Newsletter</h2>
+
+  <div class="scrollable-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Subject</mat-label>
+        <input matInput formControlName="subject" />
+        <mat-error *ngIf="form.get('subject')?.invalid && form.get('subject')?.touched">Subject is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+        <mat-error *ngIf="form.get('title')?.invalid && form.get('title')?.touched">Title is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Subtitle</mat-label>
+        <input matInput formControlName="subtitle" />
+        <mat-error *ngIf="form.get('subtitle')?.invalid && form.get('subtitle')?.touched">Subtitle is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Body</mat-label>
+        <textarea matInput rows="5" formControlName="body"></textarea>
+        <mat-error *ngIf="form.get('body')?.invalid && form.get('body')?.touched">Body is required</mat-error>
+      </mat-form-field>
+
+      <div class="upload-wrapper">
+        <label class="upload-label">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+          <mat-icon>upload</mat-icon>
+          <span>{{ selectedFile?.name || 'Upload Image' }}</span>
+        </label>
+        <mat-progress-spinner *ngIf="imageUploading" mode="indeterminate" diameter="24"></mat-progress-spinner>
+      </div>
+
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Product Link</mat-label>
+        <input matInput formControlName="productLink" />
+      </mat-form-field>
+
+      <div class="preview-toggle">
+        <button mat-stroked-button color="accent" type="button" (click)="togglePreview()">
+          {{ showPreview ? 'Hide' : 'Show' }} Preview
+        </button>
+      </div>
+
+      <div class="preview-container" *ngIf="showPreview">
+        <div class="preview-inner">
+          <div class="header">
+            <img *ngIf="imageUrl" [src]="imageUrl" alt="Product" />
+            <div class="subtitle">{{ form.get('subtitle')?.value }}</div>
+            <div class="title">{{ form.get('title')?.value }}</div>
+          </div>
+          <div class="content">
+            <p>{{ form.get('body')?.value }}</p>
+            <a *ngIf="form.get('productLink')?.value" class="cta-button" [href]="form.get('productLink')?.value" target="_blank">View Product</a>
+          </div>
+          <div class="footer">
+            © {{ currentYear }} Your Brand. All rights reserved.
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="close()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || imageUploading">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
