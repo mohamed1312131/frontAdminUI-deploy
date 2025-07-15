@@ -3,7 +3,7 @@ import {
   ApexNonAxisChartSeries, ApexChart, ApexResponsive,
   ApexLegend
 } from 'ng-apexcharts';
-import { ChartService } from '../chartService';
+import { ChartService } from '../ChartService';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -56,12 +56,12 @@ export class SalesByRegionComponent implements OnInit {
   loadChartData(year: number, month: number) {
     this.isLoading = true;
 
-    this.chartService.getSalesByRegion(year, month + 1).subscribe(data => {
+    this.chartService.getSalesByRegion(year, month + 1).subscribe((data: Record<string, number>) => {
       const regions = Object.keys(data);
       const sales = Object.values(data);
 
       this.chartOptions.labels = regions;
-      this.chartOptions.series = sales;
+      this.chartOptions.series = sales as number[];
 
       this.isLoading = false;
     });

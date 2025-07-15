@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   ApexChart, ApexNonAxisChartSeries, ApexResponsive, ApexLegend
 } from 'ng-apexcharts';
-import { ChartService } from '../chartService';
+import { ChartService } from '../ChartService';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -51,7 +51,7 @@ export class SalesByCategoryComponent implements OnInit {
 
   loadChartData(year: number, month: number): void {
     this.isLoading = true;
-    this.chartService.getSalesByCategory(year, month + 1).subscribe(data => {
+    this.chartService.getSalesByCategory(year, month + 1).subscribe((data: Record<string, number>) => {
       this.chartOptions.labels = Object.keys(data);
       this.chartOptions.series = Object.values(data);
       this.isLoading = false;

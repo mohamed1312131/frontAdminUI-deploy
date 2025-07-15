@@ -1,6 +1,6 @@
 // src/app/components/top-selling-product/top-selling-product.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ChartService, TopSellingProductDTO } from '../chartService';
+import { ChartService, TopSellingProductDTO } from '../ChartService';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class TopSellingProductComponent implements OnInit {
   loadData() {
     this.loading = true;
     this.dashboardService.getTopSellingProducts(this.selectedYear, this.selectedMonth).subscribe({
-      next: (data) => {
+      next: (data: TopSellingProductDTO[]) => {
         this.dataSource = data;
         this.loading = false;
       },

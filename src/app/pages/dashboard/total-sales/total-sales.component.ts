@@ -3,7 +3,7 @@ import {
   ApexNonAxisChartSeries, ApexChart, ApexPlotOptions,
   ApexResponsive, ApexLegend, ApexDataLabels, ApexStroke, ApexTooltip
 } from 'ng-apexcharts';
-import { ChartService } from '../chartService';
+import { ChartService } from '../ChartService';
 
 @Component({
   selector: 'app-total-sales',
@@ -52,7 +52,7 @@ export class TotalSalesComponent implements OnInit {
   }
 
   loadYearData(year: number) {
-    this.chartService.getSalesComparison(year).subscribe(data => {
+    this.chartService.getSalesComparison(year).subscribe((data: { current: number; previous: number }) => {
       const { current, previous } = data;
       const percentDiff = previous > 0 ? ((current - previous) / previous) * 100 : 100;
 

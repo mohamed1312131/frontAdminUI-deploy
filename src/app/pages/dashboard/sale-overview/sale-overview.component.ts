@@ -4,7 +4,7 @@ import {
   ApexYAxis, ApexXAxis, ApexFill, ApexTooltip, ApexStroke,
   ApexLegend, ApexGrid, ApexMarkers
 } from 'ng-apexcharts';
-import { ChartService } from '../chartService';
+import { ChartService } from '../ChartService';
 
 export interface salesOverviewChart {
   series: ApexAxisChartSeries;
@@ -60,7 +60,7 @@ export class SaleOverviewComponent implements OnInit {
   loadSalesByYear(year: number) {
     this.isChartReady = false;
 
-    this.chartService.getSalesByYear(year).subscribe(data => {
+    this.chartService.getSalesByYear(year).subscribe((data: Record<string, number>) => {
       const monthLabels = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
