@@ -4,6 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx serve dist/modernize -s -p $PORT"
+    "startCommand": "npx serve dist/modernize -s -p $PORT -H 0.0.0.0"
   }
 }
