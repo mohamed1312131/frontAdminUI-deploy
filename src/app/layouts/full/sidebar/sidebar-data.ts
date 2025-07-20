@@ -46,5 +46,16 @@ export const navItems: NavItem[] = [
     displayName: 'Category Management',
     iconName: 'category',            // ✔ Tabler: category
     route: '/ui-components/category',
-  }
+  },
+  {
+    displayName: 'Web config',
+    iconName: 'info',            // ✔ Tabler: category
+    route: '/ui-components/webinfo',
+  },
+    {
+    displayName: 'Messages',
+    iconName: 'message',            // ✔ Tabler: category
+    route: '/ui-components/contactMessages',
+  },
+
 ];
