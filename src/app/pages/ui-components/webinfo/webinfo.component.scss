@@ -35,3 +35,25 @@
     margin-top: 2rem;
   }
 }
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-preview {
+  position: relative;
+}
+
+.image-preview img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.image-preview button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

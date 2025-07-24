@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WebinfoService } from '../service/WebinfoService';
 
-
 @Component({
   selector: 'app-webinfo',
   templateUrl: './webinfo.component.html',
@@ -12,6 +11,11 @@ export class WebinfoComponent implements OnInit {
   webInfoForm!: FormGroup;
   logoUrl: string | null = null;
   aboutImageUrl: string | null = null;
+
+  // New additions for multiple Instagram images
+  instagramImages: File[] = [];
+  instagramPreviewUrls: string[] = [];
+  existingInstagramUrls: string[] = [];
 
   constructor(private fb: FormBuilder, private webinfoService: WebinfoService) {}
 
@@ -45,6 +49,7 @@ export class WebinfoComponent implements OnInit {
 
       this.logoUrl = data.logoUrl;
       this.aboutImageUrl = data.aboutUs?.imageUrl;
+      this.existingInstagramUrls = data.instagramUrls || [];
     });
   }
 
@@ -58,6 +63,28 @@ export class WebinfoComponent implements OnInit {
       if (field === 'logo') this.logoUrl = previewUrl;
       else this.aboutImageUrl = previewUrl;
     }
+  }
+
+  // Handle multiple Instagram images
+  onInstagramImagesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        this.instagramImages.push(file);
+        this.instagramPreviewUrls.push(URL.createObjectURL(file));
+      }
+    }
+  }
+
+  removeInstagramImage(index: number): void {
+    this.instagramImages.splice(index, 1);
+    this.instagramPreviewUrls.splice(index, 1);
+  }
+
+  removeExistingInstagramImage(index: number): void {
+    this.existingInstagramUrls.splice(index, 1);
+    // TODO: Optionally send DELETE request to backend if needed
   }
 
   removeImage(field: 'logo' | 'aboutImage') {
@@ -81,13 +108,20 @@ export class WebinfoComponent implements OnInit {
       aboutUs: {
         title: raw.aboutTitle,
         description: raw.aboutDescription
-      }
+      },
+      // optionally send preserved existing URLs to backend
+      instagramUrls: this.existingInstagramUrls
     };
 
     formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }));
 
     if (raw.logo) formData.append('logo', raw.logo);
     if (raw.aboutImage) formData.append('aboutImage', raw.aboutImage);
+
+    // Append new Instagram images
+    this.instagramImages.forEach(file => {
+      formData.append('instagramImages', file);
+    });
 
     this.webinfoService.submitForm(formData).subscribe({
       next: () => alert('Website Info saved successfully.'),

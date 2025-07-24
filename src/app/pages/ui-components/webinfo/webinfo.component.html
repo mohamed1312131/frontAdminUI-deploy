@@ -65,6 +65,18 @@
         <button mat-stroked-button color="warn" type="button" (click)="removeImage('logo')">Remove Logo</button>
       </div>
     </div>
+    <div class="instagram-images-section">
+  <label>Instagram Images:</label>
+  <input type="file" multiple (change)="onInstagramImagesSelected($event)">
+
+  <div class="image-gallery">
+    <div class="image-preview" *ngFor="let url of instagramPreviewUrls; let i = index">
+      <img [src]="url" alt="Instagram Image Preview">
+      <button mat-mini-button color="warn" (click)="removeInstagramImage(i)">Remove</button>
+    </div>
+  </div>
+</div>
+
 
     <button mat-raised-button color="primary" type="submit" [disabled]="webInfoForm.invalid">Save</button>
   </form>
