@@ -21,16 +21,20 @@ export class WebinfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.webInfoForm = this.fb.group({
-      instagramUrl: ['', [Validators.required, Validators.pattern('https?://.+')]],
-      phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      location: ['', Validators.required],
-      description: ['', Validators.required],
-      aboutTitle: ['', Validators.required],
-      aboutDescription: ['', Validators.required],
-      aboutImage: [null],
-      logo: [null]
-    });
+  instagramUrl: ['', [Validators.required, Validators.pattern('https?://.+')]],
+  facebookUrl: [''],
+  youtubeUrl: [''],
+  pinterestUrl: [''],
+  threadsUrl: [''],
+  phone: ['', Validators.required],
+  email: ['', [Validators.required, Validators.email]],
+  location: ['', Validators.required],
+  description: ['', Validators.required],
+  aboutTitle: ['', Validators.required],
+  aboutDescription: ['', Validators.required],
+  aboutImage: [null],
+  logo: [null]
+});
 
     this.loadData();
   }
@@ -38,14 +42,18 @@ export class WebinfoComponent implements OnInit {
   loadData(): void {
     this.webinfoService.getWebsiteInfo().subscribe(data => {
       this.webInfoForm.patchValue({
-        instagramUrl: data.instagramUrl,
-        phone: data.phone,
-        email: data.email,
-        location: data.location,
-        description: data.description,
-        aboutTitle: data.aboutUs?.title,
-        aboutDescription: data.aboutUs?.description
-      });
+  instagramUrl: data.instagramUrl,
+  facebookUrl: data.facebookUrl,
+  youtubeUrl: data.youtubeUrl,
+  pinterestUrl: data.pinterestUrl,
+  threadsUrl: data.threadsUrl,
+  phone: data.phone,
+  email: data.email,
+  location: data.location,
+  description: data.description,
+  aboutTitle: data.aboutUs?.title,
+  aboutDescription: data.aboutUs?.description
+});
 
       this.logoUrl = data.logoUrl;
       this.aboutImageUrl = data.aboutUs?.imageUrl;

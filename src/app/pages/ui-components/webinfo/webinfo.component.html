@@ -1,83 +1,135 @@
 <section class="webinfo-form-wrapper">
   <form [formGroup]="webInfoForm" (ngSubmit)="onSubmit()" class="webinfo-form" enctype="multipart/form-data">
+    
+    <!-- 🟦 Social Media Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>Social Media</mat-card-title>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Instagram URL</mat-label>
+            <input matInput formControlName="instagramUrl" placeholder="https://instagram.com/..." required>
+            <mat-error *ngIf="webInfoForm.get('instagramUrl')?.hasError('required')">Instagram URL is required</mat-error>
+          </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Instagram URL</mat-label>
-      <input matInput formControlName="instagramUrl" placeholder="https://instagram.com/..." required>
-      <mat-error *ngIf="webInfoForm.get('instagramUrl')?.hasError('required')">Instagram URL is required</mat-error>
-    </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Facebook URL</mat-label>
+            <input matInput formControlName="facebookUrl" placeholder="https://facebook.com/...">
+          </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Phone</mat-label>
-      <input matInput formControlName="phone" placeholder="Your phone number" required>
-      <mat-error *ngIf="webInfoForm.get('phone')?.hasError('required')">Phone is required</mat-error>
-    </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>YouTube URL</mat-label>
+            <input matInput formControlName="youtubeUrl" placeholder="https://youtube.com/...">
+          </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" placeholder="example@domain.com" required email>
-      <mat-error *ngIf="webInfoForm.get('email')?.hasError('required')">Email is required</mat-error>
-      <mat-error *ngIf="webInfoForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
-    </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Pinterest URL</mat-label>
+            <input matInput formControlName="pinterestUrl" placeholder="https://pinterest.com/...">
+          </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Location</mat-label>
-      <input matInput formControlName="location" placeholder="Your address" required>
-      <mat-error *ngIf="webInfoForm.get('location')?.hasError('required')">Location is required</mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="5" placeholder="Website description"></textarea>
-    </mat-form-field>
-
-    <div class="about-us-section">
-      <h4>About Us</h4>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="aboutTitle" required>
-        <mat-error *ngIf="webInfoForm.get('aboutTitle')?.hasError('required')">About title is required</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="aboutDescription" rows="6" required></textarea>
-        <mat-error *ngIf="webInfoForm.get('aboutDescription')?.hasError('required')">About description is required</mat-error>
-      </mat-form-field>
-
-      <div class="image-upload">
-        <label>About Image:</label>
-        <input type="file" (change)="onFileSelected($event, 'aboutImage')">
-
-        <div class="preview" *ngIf="aboutImageUrl">
-          <img [src]="aboutImageUrl" alt="About Image Preview" class="preview-img">
-          <button mat-stroked-button color="warn" type="button" (click)="removeImage('aboutImage')">Remove Image</button>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Threads URL</mat-label>
+            <input matInput formControlName="threadsUrl" placeholder="https://www.threads.net/...">
+          </mat-form-field>
         </div>
-      </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 🟩 Contact Info Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>Contact Information</mat-card-title>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" placeholder="Your phone number" required>
+            <mat-error *ngIf="webInfoForm.get('phone')?.hasError('required')">Phone is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="example@domain.com" required email>
+            <mat-error *ngIf="webInfoForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="webInfoForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Location</mat-label>
+            <input matInput formControlName="location" placeholder="Your address" required>
+            <mat-error *ngIf="webInfoForm.get('location')?.hasError('required')">Location is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="4" placeholder="Website description"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 🟨 About Us Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>About Us</mat-card-title>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="aboutTitle" required>
+            <mat-error *ngIf="webInfoForm.get('aboutTitle')?.hasError('required')">About title is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="aboutDescription" rows="6" required></textarea>
+            <mat-error *ngIf="webInfoForm.get('aboutDescription')?.hasError('required')">About description is required</mat-error>
+          </mat-form-field>
+
+          <div class="image-upload">
+            <label>About Image:</label>
+            <input type="file" (change)="onFileSelected($event, 'aboutImage')">
+            <div class="preview" *ngIf="aboutImageUrl">
+              <img [src]="aboutImageUrl" alt="About Image Preview" class="preview-img">
+              <button mat-stroked-button color="warn" type="button" (click)="removeImage('aboutImage')">Remove Image</button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 🟥 Branding Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>Branding</mat-card-title>
+      <mat-card-content>
+        <div class="logo-upload">
+          <label>Logo:</label>
+          <input type="file" (change)="onFileSelected($event, 'logo')">
+
+          <div class="preview" *ngIf="logoUrl">
+            <img [src]="logoUrl" alt="Logo Preview" class="preview-img">
+            <button mat-stroked-button color="warn" type="button" (click)="removeImage('logo')">Remove Logo</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 🟪 Instagram Gallery Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>Instagram Gallery</mat-card-title>
+      <mat-card-content>
+        <label>Instagram Images:</label>
+        <input type="file" multiple (change)="onInstagramImagesSelected($event)">
+        <div class="image-gallery mt-3">
+          <div class="image-preview" *ngFor="let url of instagramPreviewUrls; let i = index">
+            <img [src]="url" alt="Instagram Image Preview">
+            <button mat-mini-button color="warn" (click)="removeInstagramImage(i)">Remove</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Submit Button -->
+    <div class="text-end mt-4">
+      <button mat-raised-button color="primary" type="submit" [disabled]="webInfoForm.invalid">Save</button>
     </div>
-
-    <div class="logo-upload">
-      <label>Logo:</label>
-      <input type="file" (change)="onFileSelected($event, 'logo')">
-
-      <div class="preview" *ngIf="logoUrl">
-        <img [src]="logoUrl" alt="Logo Preview" class="preview-img">
-        <button mat-stroked-button color="warn" type="button" (click)="removeImage('logo')">Remove Logo</button>
-      </div>
-    </div>
-    <div class="instagram-images-section">
-  <label>Instagram Images:</label>
-  <input type="file" multiple (change)="onInstagramImagesSelected($event)">
-
-  <div class="image-gallery">
-    <div class="image-preview" *ngFor="let url of instagramPreviewUrls; let i = index">
-      <img [src]="url" alt="Instagram Image Preview">
-      <button mat-mini-button color="warn" (click)="removeInstagramImage(i)">Remove</button>
-    </div>
-  </div>
-</div>
-
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="webInfoForm.invalid">Save</button>
   </form>
 </section>
