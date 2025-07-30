@@ -59,8 +59,8 @@ export const navItems: NavItem[] = [
   },
   {
     displayName: 'FAQs',
-    iconName: 'copyright',            // ✔ Tabler: category
+    iconName: 'message',            // ✔ Tabler: category
     route: '/ui-components/faq',
-  },
+  }
 
 ];
