@@ -57,5 +57,10 @@ export const navItems: NavItem[] = [
     iconName: 'message',            // ✔ Tabler: category
     route: '/ui-components/contactMessages',
   },
+  {
+    displayName: 'FAQs',
+    iconName: 'copyright',            // ✔ Tabler: category
+    route: '/ui-components/faq',
+  },
 
 ];

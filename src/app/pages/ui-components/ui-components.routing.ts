@@ -65,7 +65,7 @@ export const UiComponentsRoutes: Routes = [
         component: ContactMessagesComponent
       },
       {
-        path:'Faq',
+        path:'faq',
         component: FaqComponent
       }
     ],
