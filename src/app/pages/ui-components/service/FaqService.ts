@@ -11,7 +11,7 @@ export interface Faq {
 
 @Injectable({ providedIn: 'root' })
 export class FaqService {
-  private readonly baseUrl = `${environment.apiUrl}/faq`;
+  private readonly baseUrl = `${environment.apiUrl}/faqs`;
 
   constructor(private http: HttpClient) {}
 

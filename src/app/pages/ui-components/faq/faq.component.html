@@ -1,62 +1,175 @@
 <section class="faq-admin-wrapper">
-  <form [formGroup]="faqForm" (ngSubmit)="editingIndex !== null ? updateFaq() : saveFaqs()">
+  <!-- Header Section -->
+  <div class="admin-header">
+    <h1>FAQ Management</h1>
+    <p class="subtitle">Manage your frequently asked questions with ease</p>
+  </div>
 
-    <!-- FAQ Form Section -->
-    <mat-card class="mb-4">
-      <mat-card-title>{{ editingIndex !== null ? 'Edit FAQ' : 'Add New FAQs' }}</mat-card-title>
-      <mat-card-content>
+  <!-- FAQ Form Section -->
+  <div class="faq-form-card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <mat-icon>{{ editingIndex !== null ? 'edit' : 'add_circle' }}</mat-icon>
+        {{ editingIndex !== null ? 'Edit FAQ' : 'Add New FAQs' }}
+      </h2>
+    </div>
+    
+    <div class="card-content">
+      <form [formGroup]="faqForm" (ngSubmit)="editingIndex !== null ? updateFaq() : saveFaqs()">
         <div formArrayName="faqs" class="faq-form-grid">
           <div *ngFor="let faq of faqsArray.controls; let i = index" [formGroupName]="i" class="faq-item">
-            <mat-form-field appearance="outline" class="full-width">
+            <div class="item-number">{{ i + 1 }}</div>
+            
+            <mat-form-field appearance="outline">
               <mat-label>Question</mat-label>
-              <input matInput formControlName="question" required />
-              <mat-error *ngIf="faq.get('question')?.hasError('required')">Question is required</mat-error>
+              <input matInput formControlName="question" placeholder="Enter your question here..." />
+              <mat-icon matSuffix>help_outline</mat-icon>
+              <mat-error *ngIf="faq.get('question')?.hasError('required')">
+                Question is required
+              </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="outline">
               <mat-label>Answer</mat-label>
-              <textarea matInput formControlName="answer" rows="4" required></textarea>
-              <mat-error *ngIf="faq.get('answer')?.hasError('required')">Answer is required</mat-error>
+              <textarea 
+                matInput 
+                formControlName="answer" 
+                rows="4" 
+                placeholder="Provide a detailed answer..."
+              ></textarea>
+              <mat-icon matSuffix>description</mat-icon>
+              <mat-error *ngIf="faq.get('answer')?.hasError('required')">
+                Answer is required
+              </mat-error>
             </mat-form-field>
 
-            <button mat-stroked-button color="warn" type="button" (click)="faqsArray.removeAt(i)" *ngIf="editingIndex === null">Remove</button>
+            <button 
+              mat-icon-button 
+              type="button" 
+              class="remove-btn"
+              (click)="faqsArray.removeAt(i)" 
+              *ngIf="editingIndex === null && faqsArray.length > 1"
+              matTooltip="Remove this FAQ"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
           </div>
         </div>
 
-        <div class="text-end mt-3">
-          <button mat-flat-button color="accent" type="button" (click)="addFaq()" *ngIf="editingIndex === null">Add FAQ</button>
+        <div class="form-actions">
+          <button 
+            mat-raised-button 
+            type="button" 
+            class="add-faq-btn"
+            (click)="addFaq()" 
+            *ngIf="editingIndex === null"
+          >
+            <mat-icon>add</mat-icon>
+            Add Another FAQ
+          </button>
+
+          <button 
+            mat-raised-button 
+            type="submit" 
+            class="save-btn"
+            [disabled]="faqForm.invalid || faqsArray.length === 0"
+          >
+            <mat-icon>{{ editingIndex !== null ? 'update' : 'save' }}</mat-icon>
+            {{ editingIndex !== null ? 'Update FAQ' : 'Save All FAQs' }}
+          </button>
         </div>
-      </mat-card-content>
-    </mat-card>
-
-    <div class="text-end">
-      <button mat-raised-button color="primary" type="submit" [disabled]="faqForm.invalid">
-        {{ editingIndex !== null ? 'Update FAQ' : 'Save FAQs' }}
-      </button>
+      </form>
     </div>
-  </form>
+  </div>
 
-  <!-- Existing FAQs List Section -->
-  <mat-card class="mt-4">
-    <mat-card-title>Existing FAQs</mat-card-title>
-    <mat-card-content>
-      <mat-accordion *ngIf="faqs.length > 0; else noData">
-        <mat-expansion-panel *ngFor="let faq of faqs; let i = index">
+  <!-- Existing FAQs Section -->
+  <div class="existing-faqs-card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <mat-icon>list_alt</mat-icon>
+        Existing FAQs ({{ faqs.length }})
+      </h2>
+    </div>
+    
+    <div class="card-content">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- FAQ List -->
+      <mat-accordion *ngIf="!isLoading && faqs.length > 0" multi="false">
+        <mat-expansion-panel *ngFor="let faq of faqs; let i = index" [expanded]="i === 0">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              {{ faq.question }}
+              <span class="question-text">{{ faq.question }}</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
+          
           <p>{{ faq.answer }}</p>
+          
           <div class="faq-actions">
-            <button mat-icon-button color="primary" (click)="editFaq(i)"><mat-icon>edit</mat-icon></button>
-            <button mat-icon-button color="warn" (click)="deleteFaq(faq.id)"><mat-icon>delete</mat-icon></button>
+            <button 
+              mat-stroked-button 
+              class="action-btn edit-btn"
+              (click)="editFaq(i)"
+              [disabled]="editingIndex !== null"
+            >
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            
+            <button 
+              mat-stroked-button 
+              class="action-btn delete-btn"
+              (click)="deleteFaq(faq.id)"
+              [disabled]="editingIndex !== null"
+            >
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-      <ng-template #noData>
-        <p class="text-center text-muted">No FAQs available.</p>
-      </ng-template>
-    </mat-card-content>
-  </mat-card>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && faqs.length === 0" class="empty-state">
+        <mat-icon>help_outline</mat-icon>
+        <h3>No FAQs Yet</h3>
+        <p>Start by adding your first FAQ using the form above.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions (Optional Enhancement) -->
+  <div class="bulk-actions" *ngIf="faqs.length > 0">
+    <mat-card>
+      <mat-card-content>
+        <div class="bulk-header">
+          <h3>Bulk Actions</h3>
+          <mat-slide-toggle [(ngModel)]="bulkMode">Enable Bulk Selection</mat-slide-toggle>
+        </div>
+        
+        <div *ngIf="bulkMode" class="bulk-controls">
+          <mat-selection-list #faqSelection [multiple]="true">
+            <mat-list-option *ngFor="let faq of faqs; let i = index" [value]="faq.id">
+              {{ faq.question }}
+            </mat-list-option>
+          </mat-selection-list>
+          
+          <div class="bulk-buttons">
+            <button 
+              mat-raised-button 
+              color="warn"
+              (click)="deleteSelectedFaqs(faqSelection.selectedOptions.selected)"
+              [disabled]="faqSelection.selectedOptions.selected.length === 0"
+            >
+              <mat-icon>delete_sweep</mat-icon>
+              Delete Selected ({{ faqSelection.selectedOptions.selected.length }})
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </section>

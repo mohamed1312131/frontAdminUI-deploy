@@ -30,7 +30,7 @@ import { NoteListComponent } from './note/note-list/note-list.component';
 import { CategoryListComponent } from './category/category-list/category-list.component';
 import { WebinfoComponent } from './webinfo/webinfo.component';
 import { ContactMessagesComponent } from './contact-messages/contact-messages.component';
-import { FaqComponent } from './faq/faq.component';
+import { ConfirmDialogComponent, FaqComponent } from './faq/faq.component';
 
 
 
@@ -64,7 +64,8 @@ import { FaqComponent } from './faq/faq.component';
     CategoryListComponent,
     WebinfoComponent,
     ContactMessagesComponent,
-    FaqComponent
+    FaqComponent,
+    ConfirmDialogComponent
   ],
 })
 export class UicomponentsModule {}

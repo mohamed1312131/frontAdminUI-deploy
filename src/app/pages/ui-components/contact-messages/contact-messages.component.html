@@ -3,7 +3,6 @@
     <mat-card-title>Contact Messages</mat-card-title>
     <mat-card-subtitle *ngIf="dataSource.data.length === 0">No messages found</mat-card-subtitle>
   </mat-card-header>
-
   <mat-card-content>
     <div class="table-wrapper" *ngIf="dataSource.data.length > 0; else noData">
       <div class="search-bar">
@@ -77,5 +76,3 @@
     </ng-template>
   </mat-card-content>
 </mat-card>
-
-<app-faq></app-faq>
