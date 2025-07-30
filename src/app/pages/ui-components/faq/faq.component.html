@@ -1,0 +1,62 @@
+<section class="faq-admin-wrapper">
+  <form [formGroup]="faqForm" (ngSubmit)="editingIndex !== null ? updateFaq() : saveFaqs()">
+
+    <!-- FAQ Form Section -->
+    <mat-card class="mb-4">
+      <mat-card-title>{{ editingIndex !== null ? 'Edit FAQ' : 'Add New FAQs' }}</mat-card-title>
+      <mat-card-content>
+        <div formArrayName="faqs" class="faq-form-grid">
+          <div *ngFor="let faq of faqsArray.controls; let i = index" [formGroupName]="i" class="faq-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Question</mat-label>
+              <input matInput formControlName="question" required />
+              <mat-error *ngIf="faq.get('question')?.hasError('required')">Question is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Answer</mat-label>
+              <textarea matInput formControlName="answer" rows="4" required></textarea>
+              <mat-error *ngIf="faq.get('answer')?.hasError('required')">Answer is required</mat-error>
+            </mat-form-field>
+
+            <button mat-stroked-button color="warn" type="button" (click)="faqsArray.removeAt(i)" *ngIf="editingIndex === null">Remove</button>
+          </div>
+        </div>
+
+        <div class="text-end mt-3">
+          <button mat-flat-button color="accent" type="button" (click)="addFaq()" *ngIf="editingIndex === null">Add FAQ</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="text-end">
+      <button mat-raised-button color="primary" type="submit" [disabled]="faqForm.invalid">
+        {{ editingIndex !== null ? 'Update FAQ' : 'Save FAQs' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Existing FAQs List Section -->
+  <mat-card class="mt-4">
+    <mat-card-title>Existing FAQs</mat-card-title>
+    <mat-card-content>
+      <mat-accordion *ngIf="faqs.length > 0; else noData">
+        <mat-expansion-panel *ngFor="let faq of faqs; let i = index">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ faq.question }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ faq.answer }}</p>
+          <div class="faq-actions">
+            <button mat-icon-button color="primary" (click)="editFaq(i)"><mat-icon>edit</mat-icon></button>
+            <button mat-icon-button color="warn" (click)="deleteFaq(faq.id)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <ng-template #noData>
+        <p class="text-center text-muted">No FAQs available.</p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</section>

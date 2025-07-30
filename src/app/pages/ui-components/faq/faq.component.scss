@@ -1,0 +1,80 @@
+.faq-admin-wrapper {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #3f51b5; // Indigo
+  }
+
+  .faq-form {
+    margin-bottom: 2rem;
+
+    .faq-group {
+      padding: 1.5rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: #fafafa;
+      margin-bottom: 1.5rem;
+
+      .mat-form-field {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+    }
+
+    .add-btn {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .faq-list {
+    margin-top: 3rem;
+
+    .faq-item {
+      background: #f9f9f9;
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      border-left: 5px solid #3f51b5;
+
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.5rem;
+        color: #222;
+      }
+
+      p {
+        margin: 0;
+        color: #555;
+      }
+
+      .item-actions {
+        margin-top: 0.8rem;
+        display: flex;
+        gap: 1rem;
+
+        button {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  .mat-snack-bar-container {
+    font-size: 0.95rem;
+    background-color: #323232;
+    color: #fff;
+  }
+}

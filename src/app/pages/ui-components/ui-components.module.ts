@@ -30,6 +30,9 @@ import { NoteListComponent } from './note/note-list/note-list.component';
 import { CategoryListComponent } from './category/category-list/category-list.component';
 import { WebinfoComponent } from './webinfo/webinfo.component';
 import { ContactMessagesComponent } from './contact-messages/contact-messages.component';
+import { FaqComponent } from './faq/faq.component';
+
+
 
 
 @NgModule({
@@ -60,7 +63,8 @@ import { ContactMessagesComponent } from './contact-messages/contact-messages.co
     NoteListComponent,
     CategoryListComponent,
     WebinfoComponent,
-    ContactMessagesComponent
+    ContactMessagesComponent,
+    FaqComponent
   ],
 })
 export class UicomponentsModule {}
