@@ -27,7 +27,7 @@ export class FaqService {
 
   // 🟢 Add multiple FAQs
   addManyFaqs(faqs: Faq[]): Observable<Faq[]> {
-    return this.http.post<Faq[]>(`${this.baseUrl}/bulk`, faqs);
+    return this.http.post<Faq[]>(`${this.baseUrl}/batch`, faqs);
   }
 
   // 🟡 Update single FAQ
@@ -41,7 +41,7 @@ export class FaqService {
   }
 
   // 🔴 Delete multiple FAQs
-  deleteManyFaqs(ids: string[]): Observable<void> {
-    return this.http.request<void>('delete', `${this.baseUrl}/bulk`, { body: ids });
-  }
+ deleteManyFaqs(ids: string[]): Observable<void> {
+  return this.http.request<void>('delete', `${this.baseUrl}/batch`, { body: ids });
+}
 }
