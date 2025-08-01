@@ -28,6 +28,7 @@ export class UpdateProductComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
+      sizeGuide: [''], // ✅ ADD THIS LINE
       oldPrice: [0],
       additionalInfo: [''],
       categoryId: ['', Validators.required],
@@ -46,6 +47,7 @@ export class UpdateProductComponent implements OnInit {
       title: data.title,
       description: data.description,
       price: data.price,
+       sizeGuide: data.sizeGuide,
       oldPrice: data.oldPrice,
       additionalInfo: data.additionalInfo,
       categoryId: data.allCategories.find(c => c.name === this.getCurrentCategoryName())?.id || ''

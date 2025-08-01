@@ -25,6 +25,7 @@ export interface ProductDetails {
   oldPrice?: number;
   additionalInfo?: string;
   variants: ProductVariant[];
+  sizeGuide?: string; // Optional size guide URL
 }
 
 @Component({
