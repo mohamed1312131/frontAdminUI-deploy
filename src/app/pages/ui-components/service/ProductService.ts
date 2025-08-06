@@ -91,10 +91,12 @@ getCategories(): Observable<ProductCategory[]> {
   // --- new methods ---
 
   /** Update core product fields */
-  updateProduct(id: string, data: ProductDetailsDTO): Observable<ProductDetails> {
+updateProduct(id: string, formData: FormData): Observable<ProductDetails> {
     return this.http.put<ProductDetails>(
       `${this.apiUrl}/${id}`,
-      data
+      formData
+      // Note: No 'Content-Type' header is set here. Angular's HttpClient
+      // will automatically set it to 'multipart/form-data' with the correct boundary.
     );
   }
 

@@ -1,5 +1,3 @@
-// /src/app/components/update-product/update-product.component.ts
-
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -18,9 +16,10 @@ export class UpdateProductComponent implements OnInit {
   isLoading = false;
   newImagesMap = new Map<string, File[]>();
   removedVariantIds: string[] = [];
-
-  // ✨ NEW: State for the size guide file
+  
+  // Properties for size guide management
   sizeGuideFile: File | null = null;
+  sizeGuidePreview: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -33,11 +32,12 @@ export class UpdateProductComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      sizeGuide: [''], // This control will hold the URL for display
       oldPrice: [0],
       additionalInfo: [''],
       categoryId: ['', Validators.required],
       newCategoryName: [''],
+      // Form control for the size guide URL or null
+      sizeGuide: [null], 
       variants: this.fb.array([])
     });
   }
@@ -52,9 +52,10 @@ export class UpdateProductComponent implements OnInit {
       title: data.title,
       description: data.description,
       price: data.price,
-      sizeGuide: data.sizeGuide,
       oldPrice: data.oldPrice,
       additionalInfo: data.additionalInfo,
+      // Patch the existing size guide URL into the form
+      sizeGuide: data.sizeGuide,
       categoryId: data.allCategories.find(c => c.name === this.getCurrentCategoryName())?.id || ''
     });
 
@@ -74,85 +75,10 @@ export class UpdateProductComponent implements OnInit {
         )
       })
     );
+
     this.productForm.setControl('variants', this.fb.array(variantControls));
   }
-  
-  // ✨ NEW: Handle size guide file selection
-  onSizeGuideSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.sizeGuideFile = input.files[0];
-      // Create a temporary URL for previewing the new image
-      const previewUrl = URL.createObjectURL(this.sizeGuideFile);
-      this.productForm.get('sizeGuide')?.setValue(previewUrl);
-    }
-  }
 
-  // ✨ NEW: Remove the size guide
-  removeSizeGuide(): void {
-    this.sizeGuideFile = null;
-    this.productForm.get('sizeGuide')?.setValue(null);
-    // You might want to revoke the object URL if it exists to free memory
-    // URL.revokeObjectURL(...)
-  }
-  
-  // 🔧 MODIFIED: The onSave method is updated to handle file uploads
-  async onSave(): Promise<void> {
-    if (this.productForm.invalid) {
-      this.snackBar.open('Form is invalid. Please check all fields.', 'Close', { duration: 3000 });
-      return;
-    }
-  
-    this.isLoading = true;
-  
-    try {
-      const productUpdatePayload = {
-        ...this.productForm.value,
-        variantsToDelete: this.removedVariantIds
-      };
-  
-      // ✅ LOGIC: Decide which endpoint to call based on whether a new size guide was uploaded.
-      if (this.sizeGuideFile) {
-        const formData = new FormData();
-        // The DTO payload. 'sizeGuide' will be overwritten on the backend by the uploaded file.
-        formData.append('product', new Blob([JSON.stringify(productUpdatePayload)], { type: 'application/json' }));
-        formData.append('sizeGuideImage', this.sizeGuideFile);
-  
-        await this.productSvc.updateProductWithSizeGuide(this.product.id, formData).toPromise();
-      } else {
-        // No new file, just send the JSON data.
-        // If the user removed the guide, `productUpdatePayload.sizeGuide` will be null, and the backend will save it.
-        await this.productSvc.updateProduct(this.product.id, productUpdatePayload).toPromise();
-      }
-  
-      // --- The rest of the variant update logic remains the same ---
-      for (let i = 0; i < this.variants.length; i++) {
-        const variantFormGroup = this.variants.at(i);
-        const variantId = variantFormGroup.get('variantId')?.value;
-  
-        if (!variantId) {
-          const tempKey = `new-${i}`;
-          const uploadPayload = {
-            color: variantFormGroup.get('color')?.value,
-            sizes: variantFormGroup.get('sizes')?.value
-          };
-          await this.productSvc.uploadVariant(this.product.id, uploadPayload, this.newImagesMap.get(tempKey) || []).toPromise();
-        } else {
-          await this.productSvc.updateVariant(this.product.id, variantFormGroup.value, this.newImagesMap.get(variantId) || []).toPromise();
-        }
-      }
-  
-      this.snackBar.open('Product updated successfully!', 'Close', { duration: 3000 });
-      this.dialogRef.close(true);
-    } catch (error) {
-      console.error('Failed to update product', error);
-      this.snackBar.open('An error occurred. Please try again.', 'Close', { duration: 4000 });
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  // --- Other methods (getters, add/remove variant/size, etc.) remain unchanged ---
   get variants(): FormArray {
     return this.productForm.get('variants') as FormArray;
   }
@@ -182,8 +108,10 @@ export class UpdateProductComponent implements OnInit {
       variantId = null;
       variantFormGroup.get('variantId')?.setValue(null);
     }
+    
     const tempKey = variantId || `new-${variantIndex}`;
     this.newImagesMap.set(tempKey, files);
+
     const existingImages = variantFormGroup.get('images')?.value || [];
     const newImageUrls = files.map(file => URL.createObjectURL(file));
     variantFormGroup.get('images')?.setValue([...existingImages, ...newImageUrls]);
@@ -193,16 +121,114 @@ export class UpdateProductComponent implements OnInit {
     const variantFormGroup = this.variants.at(variantIndex) as FormGroup;
     const imagesControl = variantFormGroup.get('images');
     const imagesToRemoveControl = variantFormGroup.get('imagesToRemove');
+
     if (imagesControl) {
       imagesControl.setValue(imagesControl.value.filter((img: string) => img !== imageUrl));
     }
+
     if (imageUrl.startsWith('http') && imagesToRemoveControl) {
       imagesToRemoveControl.value.push(imageUrl);
     }
   }
 
+  // --- New methods for handling the size guide image ---
+
+  onSizeGuideSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.sizeGuideFile = file;
+      this.sizeGuidePreview = URL.createObjectURL(file); // Create a temporary URL for preview
+      this.productForm.get('sizeGuide')?.markAsDirty();
+    }
+  }
+
+  clearSizeGuide(): void {
+      this.sizeGuideFile = null;
+      this.sizeGuidePreview = null;
+      // Set the form control value to null to signal deletion on the backend
+      this.productForm.get('sizeGuide')?.setValue(null);
+      this.productForm.get('sizeGuide')?.markAsDirty();
+  }
+  
+  // --- Main Save Logic ---
+
+  async onSave(): Promise<void> {
+    if (this.productForm.invalid) {
+      this.snackBar.open('Form is invalid. Please check all fields.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    this.isLoading = true;
+
+    try {
+        // Use FormData to be able to send the product data and the image file together
+        const formData = new FormData();
+
+        // 1. Prepare the product data payload (excluding variants for this first call)
+        const productUpdatePayload = {
+            title: this.productForm.get('title')?.value,
+            description: this.productForm.get('description')?.value,
+            price: this.productForm.get('price')?.value,
+            oldPrice: this.productForm.get('oldPrice')?.value,
+            additionalInfo: this.productForm.get('additionalInfo')?.value,
+            categoryId: this.productForm.get('categoryId')?.value,
+            sizeGuide: this.productForm.get('sizeGuide')?.value,
+            variantsToDelete: this.removedVariantIds
+        };
+        
+        // 2. Append product data as a JSON Blob. The backend will parse this string.
+        formData.append('productData', new Blob([JSON.stringify(productUpdatePayload)], {
+            type: 'application/json'
+        }));
+
+        // 3. Append the new size guide image file, if one was selected
+        if (this.sizeGuideFile) {
+            formData.append('sizeGuideImage', this.sizeGuideFile, this.sizeGuideFile.name);
+        }
+
+        // 4. Call the service to update the core product details and size guide
+        await this.productSvc.updateProduct(this.product.id, formData).toPromise();
+
+        // 5. Sequentially handle variant updates and new additions
+        for (let i = 0; i < this.variants.length; i++) {
+            const variantFormGroup = this.variants.at(i);
+            const variantId = variantFormGroup.get('variantId')?.value;
+
+            if (!variantId) { // This is a new variant
+                const tempKey = `new-${i}`;
+                const uploadPayload = {
+                    color: variantFormGroup.get('color')?.value,
+                    sizes: variantFormGroup.get('sizes')?.value
+                };
+                await this.productSvc.uploadVariant(
+                    this.product.id,
+                    uploadPayload,
+                    this.newImagesMap.get(tempKey) || []
+                ).toPromise();
+
+            } else { // This is an existing variant
+                await this.productSvc.updateVariant(
+                    this.product.id,
+                    variantFormGroup.value,
+                    this.newImagesMap.get(variantId) || []
+                ).toPromise();
+            }
+        }
+
+        this.snackBar.open('Product updated successfully!', 'Close', { duration: 3000 });
+        this.dialogRef.close(true); // Close dialog and signal success
+    } catch (error) {
+        console.error('Failed to update product', error);
+        this.snackBar.open('An error occurred during the update. Please try again.', 'Close', { duration: 4000 });
+    } finally {
+        this.isLoading = false;
+    }
+  }
+
   private getCurrentCategoryName(): string {
-    const variant = this.product.variants[0];
+    // This seems like placeholder logic, but keeping it as is from the original code.
+    // In a real scenario, you might get this from this.product.category.name or similar.
     return "t shirt";
   }
 
@@ -219,6 +245,7 @@ export class UpdateProductComponent implements OnInit {
         })
       ])
     });
+
     this.variants.push(newVariantGroup);
   }
 
@@ -227,7 +254,7 @@ export class UpdateProductComponent implements OnInit {
     if (variantId) {
       this.removedVariantIds.push(variantId);
     }
-    this.newImagesMap.delete(variantId);
+    this.newImagesMap.delete(variantId); // Also clean up any staged images for the deleted variant
     this.variants.removeAt(index);
   }
 }

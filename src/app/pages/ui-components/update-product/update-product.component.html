@@ -45,28 +45,35 @@
         <mat-label>Additional Information</mat-label>
         <textarea matInput formControlName="additionalInfo"></textarea>
       </mat-form-field>
+    </mat-card-content>
+  </mat-card>
 
-      <div class="size-guide-section">
-        <h4 class="mat-subheading-2">Size Guide</h4>
-        
-        <div *ngIf="productForm.get('sizeGuide')?.value" class="image-preview-container">
-          <div class="image-preview">
-            <img [src]="productForm.get('sizeGuide')?.value" alt="Size guide preview" />
-            <button mat-icon-button class="remove-image-btn" (click)="removeSizeGuide()">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-
+  <mat-card class="form-card">
+    <mat-card-header>
+        <mat-card-title>Size Guide Image</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
         <div class="file-input-container">
             <button type="button" mat-stroked-button (click)="sizeGuideInput.click()">
-              <mat-icon>upload_file</mat-icon> 
-              {{ productForm.get('sizeGuide')?.value ? 'Change Size Guide' : 'Upload Size Guide' }}
+                <mat-icon>upload_file</mat-icon> Upload Size Guide
             </button>
-            <input hidden #sizeGuideInput type="file" accept="image/*" (change)="onSizeGuideSelected($event)" />
+            <input hidden #sizeGuideInput type="file" (change)="onSizeGuideSelected($event)" accept="image/*" />
+             <button mat-icon-button color="warn" *ngIf="sizeGuidePreview || productForm.get('sizeGuide')?.value" (click)="clearSizeGuide()" aria-label="Clear size guide image">
+                <mat-icon>delete_forever</mat-icon>
+            </button>
         </div>
-      </div>
-      </mat-card-content>
+        
+        <div class="image-preview-container" style="margin-top: 16px;">
+            <div *ngIf="sizeGuidePreview" class="image-preview">
+                <p><small>New Image Preview:</small></p>
+                <img [src]="sizeGuidePreview" alt="New size guide preview" />
+            </div>
+            <div *ngIf="!sizeGuidePreview && productForm.get('sizeGuide')?.value" class="image-preview">
+                 <p><small>Current Image:</small></p>
+                <img [src]="productForm.get('sizeGuide')?.value" alt="Current size guide" />
+            </div>
+        </div>
+    </mat-card-content>
   </mat-card>
 
   <div class="add-variant-container">
