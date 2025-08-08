@@ -162,10 +162,9 @@ export class UpdateProductComponent implements OnInit {
     this.isLoading = true;
 
     try {
-        // Use FormData to be able to send the product data and the image file together
         const formData = new FormData();
 
-        // 1. Prepare the product data payload (excluding variants for this first call)
+        // ✅ FIXED: Use correct key name that matches backend expectation
         const productUpdatePayload = {
             title: this.productForm.get('title')?.value,
             description: this.productForm.get('description')?.value,
@@ -177,25 +176,26 @@ export class UpdateProductComponent implements OnInit {
             variantsToDelete: this.removedVariantIds
         };
         
-        // 2. Append product data as a JSON Blob. The backend will parse this string.
+        // ✅ FIXED: Use 'productData' key to match backend @RequestPart("productData")
         formData.append('productData', new Blob([JSON.stringify(productUpdatePayload)], {
             type: 'application/json'
         }));
 
-        // 3. Append the new size guide image file, if one was selected
+        // ✅ Add size guide image if provided
         if (this.sizeGuideFile) {
             formData.append('sizeGuideImage', this.sizeGuideFile, this.sizeGuideFile.name);
         }
 
-        // 4. Call the service to update the core product details and size guide
+        // ✅ Update the core product details using the single endpoint
         await this.productSvc.updateProduct(this.product.id, formData).toPromise();
 
-        // 5. Sequentially handle variant updates and new additions
+        // ✅ Handle variant updates and new additions
         for (let i = 0; i < this.variants.length; i++) {
             const variantFormGroup = this.variants.at(i);
             const variantId = variantFormGroup.get('variantId')?.value;
 
-            if (!variantId) { // This is a new variant
+            if (!variantId) { 
+                // ✅ This is a new variant - use uploadVariant
                 const tempKey = `new-${i}`;
                 const uploadPayload = {
                     color: variantFormGroup.get('color')?.value,
@@ -207,17 +207,25 @@ export class UpdateProductComponent implements OnInit {
                     this.newImagesMap.get(tempKey) || []
                 ).toPromise();
 
-            } else { // This is an existing variant
+            } else { 
+                // ✅ FIXED: Existing variant - prepare correct payload for updateVariant
+                const updatePayload = {
+                    variantId: variantId,
+                    color: variantFormGroup.get('color')?.value,
+                    sizes: variantFormGroup.get('sizes')?.value,
+                    imagesToRemove: variantFormGroup.get('imagesToRemove')?.value || []
+                };
+                
                 await this.productSvc.updateVariant(
                     this.product.id,
-                    variantFormGroup.value,
+                    updatePayload,
                     this.newImagesMap.get(variantId) || []
                 ).toPromise();
             }
         }
 
         this.snackBar.open('Product updated successfully!', 'Close', { duration: 3000 });
-        this.dialogRef.close(true); // Close dialog and signal success
+        this.dialogRef.close(true);
     } catch (error) {
         console.error('Failed to update product', error);
         this.snackBar.open('An error occurred during the update. Please try again.', 'Close', { duration: 4000 });
@@ -254,7 +262,10 @@ export class UpdateProductComponent implements OnInit {
     if (variantId) {
       this.removedVariantIds.push(variantId);
     }
-    this.newImagesMap.delete(variantId); // Also clean up any staged images for the deleted variant
+    
+    // ✅ FIXED: Clean up properly
+    const tempKey = variantId || `new-${index}`;
+    this.newImagesMap.delete(tempKey);
     this.variants.removeAt(index);
   }
 }

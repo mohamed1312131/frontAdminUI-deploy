@@ -153,53 +153,70 @@ export class AddProductComponent implements OnInit {
     moveItemInArray(this.uploadProgress[vi], e.previousIndex, e.currentIndex);
   }
 
-  async onSubmit(): Promise<void> {
-    if (this.productForm.invalid) return;
-    this.submitting = true;
+  // In your add-product.component.ts, replace the onSubmit method:
 
-    const core = this.coreInfo.getRawValue();
-    const pricing = this.pricing.getRawValue();
+async onSubmit(): Promise<void> {
+  if (this.productForm.invalid) return;
+  this.submitting = true;
 
-    const dto: ProductDetailsDTO = {
-      title: core.title,
-      description: core.description,
-      categoryId: core.categoryId,
-      price: pricing.price,
-      oldPrice: pricing.oldPrice,
-      additionalInfo: core.additionalInfo,
-      sizeGuide: core.sizeGuide
-    };
+  const core = this.coreInfo.getRawValue();
+  const pricing = this.pricing.getRawValue();
 
-    try {
-      const prod = await this.productService.createProduct(dto).toPromise();
-      const pid = prod.id;
+  const dto: ProductDetailsDTO = {
+    title: core.title,
+    description: core.description,
+    categoryId: core.categoryId,
+    price: pricing.price,
+    oldPrice: pricing.oldPrice,
+    additionalInfo: core.additionalInfo,
+    sizeGuide: core.sizeGuide
+  };
+
+  try {
+    const prod = await this.productService.createProduct(dto).toPromise();
+    const pid = prod.id;
+    
+    // ✅ FIXED: Upload size guide image using the correct endpoint
+    if (this.sizeGuideFile) {
+      const formData = new FormData();
+      formData.append('productData', new Blob([JSON.stringify(dto)], { type: 'application/json' }));
+      formData.append('sizeGuideImage', this.sizeGuideFile);
       
-      // Upload size guide image if provided
-      if (this.sizeGuideFile) {
-        const formData = new FormData();
-        formData.append('product', new Blob([JSON.stringify(dto)], { type: 'application/json' }));
-        formData.append('sizeGuideImage', this.sizeGuideFile);
-        await this.productService.updateProductWithSizeGuide(pid, formData).toPromise();
+      // Use the existing updateProduct endpoint instead of the non-existent updateProductWithSizeGuide
+      await this.productService.updateProduct(pid, formData).toPromise();
+    }
+    
+    // Upload variants
+    for (let i = 0; i < this.variants.length; i++) {
+      const vg = this.variants.at(i);
+      const vdto: ProductVariantUploadDTO = {
+        color: vg.get('color')!.value,
+        sizes: this.sizes(i).value
+      };
+      const imgs = this.imageFiles[i];
+      if (imgs.length) {
+        await this.productService.uploadVariant(pid, vdto, imgs).toPromise();
       }
-      
-      for (let i = 0; i < this.variants.length; i++) {
-        const vg = this.variants.at(i);
-        const vdto: ProductVariantUploadDTO = {
-          color: vg.get('color')!.value,
-          sizes: this.sizes(i).value
-        };
-        const imgs = this.imageFiles[i];
-        if (imgs.length) await this.productService.uploadVariant(pid, vdto, imgs).toPromise();
-      }
-      this.snackBar.open('Product created!', 'Close', { duration: 3000 });
-      this.resetForm();
-    } catch (e) {
-      console.error(e);
-      this.snackBar.open('Upload error', 'Close', { duration: 3000 });
-    } finally {
-      this.submitting = false;
+    }
+    
+    this.snackBar.open('Product created successfully!', 'Close', { duration: 3000 });
+    this.resetForm();
+  } catch (e) {
+  console.error('Upload error:', e);
+  let errorMsg = 'Unknown error';
+  if (typeof e === 'object' && e !== null) {
+    // If e has an 'error' property with a 'message'
+    if ('error' in e && typeof (e as any).error?.message === 'string') {
+      errorMsg = (e as any).error.message;
+    } else if ('message' in e && typeof (e as any).message === 'string') {
+      errorMsg = (e as any).message;
     }
   }
+  this.snackBar.open('Upload error: ' + errorMsg, 'Close', { duration: 3000 });
+} finally {
+    this.submitting = false;
+  }
+}
 
   private resetForm(): void {
     this.productForm.reset();
