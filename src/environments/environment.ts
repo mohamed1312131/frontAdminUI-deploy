@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://brandbackend-deploy-production.up.railway.app/api'
+  apiUrl: 'https://hamza-brand-backend-2025.azurewebsites.net/api'
 };
