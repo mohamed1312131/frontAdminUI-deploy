@@ -12,7 +12,8 @@ import { UpdateNoteComponent } from '../update-note/update-note.component';
   styleUrls: ['./note-list.component.scss']
 })
 export class NoteListComponent implements OnInit {
-  displayedColumns: string[] = ['image', 'title', 'description', 'status', 'actions'];
+  readonly buttonLabels: Record<string, string> = { SHOP: 'Shop now', INQUIRY: 'Inquiry', CUSTOM: 'Custom link', NONE: 'No button' };
+  displayedColumns: string[] = ['image', 'title', 'description', 'button', 'status', 'actions'];
   dataSource = new MatTableDataSource<Note>();
 
   constructor(private noteService: NoteService,private dialog: MatDialog) {}

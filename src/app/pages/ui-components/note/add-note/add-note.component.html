@@ -26,6 +26,8 @@
       <img [src]="imagePreview" alt="Preview" />
     </div>
 
+    <app-note-button-fields [form]="form"></app-note-button-fields>
+
     <div mat-dialog-actions class="d-flex justify-content-end gap-2">
       <button mat-stroked-button type="button" color="primary" (click)="dialogRef.close()">Cancel</button>
       <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Create</button>

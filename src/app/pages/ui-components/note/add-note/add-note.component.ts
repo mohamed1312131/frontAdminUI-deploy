@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { NoteButtonFieldsComponent, addNoteButtonControls, appendNoteButtonFields } from '../note-button-fields/note-button-fields.component';
 
 @Component({
   selector: 'app-add-note',
@@ -16,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    NoteButtonFieldsComponent
   ],
   templateUrl: './add-note.component.html',
   styleUrls: ['./add-note.component.scss']
@@ -35,6 +37,7 @@ export class AddNoteComponent {
       description: ['', Validators.required],
       image: [null, Validators.required]
     });
+    addNoteButtonControls(this.fb, this.form);
   }
 
   onImageSelected(event: Event): void {
@@ -50,12 +53,16 @@ export class AddNoteComponent {
   }
 
   submit(): void {
-    if (this.form.invalid || !this.imageFile) return;
+    if (this.form.invalid || !this.imageFile) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     const formData = new FormData();
     formData.append('title', this.form.value.title);
     formData.append('description', this.form.value.description);
     formData.append('image', this.imageFile);
+    appendNoteButtonFields(formData, this.form);
 
     this.http.post(`${environment.apiUrl}/notes`, formData).subscribe({
       next: (note) => this.dialogRef.close(note),

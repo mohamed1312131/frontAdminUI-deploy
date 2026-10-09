@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { NoteButtonFieldsComponent, addNoteButtonControls, appendNoteButtonFields } from '../note-button-fields/note-button-fields.component';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -18,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    NoteButtonFieldsComponent,
     MatIconModule
   ],
   templateUrl: './update-note.component.html',
@@ -38,6 +40,7 @@ export class UpdateNoteComponent implements OnInit {
     description: [this.data.description, Validators.required],
     image: [null] // image is handled separately
   });
+  addNoteButtonControls(this.fb, this.form, this.data);
 
   this.imagePreview = this.data.imageUrl || null;
 }
@@ -76,6 +79,8 @@ export class UpdateNoteComponent implements OnInit {
   } else if (!this.imagePreview) {
     formData.append('image', ''); // signal removal (though not possible here if required)
   }
+
+  appendNoteButtonFields(formData, this.form);
 
   this.http.post(`${environment.apiUrl}/notes/${this.data.id}`, formData).subscribe({
     next: updatedNote => this.dialogRef.close(updatedNote),
