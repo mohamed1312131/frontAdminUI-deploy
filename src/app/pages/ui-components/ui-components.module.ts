@@ -31,6 +31,7 @@ import { CategoryListComponent } from './category/category-list/category-list.co
 import { WebinfoComponent } from './webinfo/webinfo.component';
 import { ContactMessagesComponent } from './contact-messages/contact-messages.component';
 import { ConfirmDialogComponent, FaqComponent } from './faq/faq.component';
+import { ClientInquiriesComponent } from './client-inquiries/client-inquiries.component';
 
 
 
@@ -65,7 +66,8 @@ import { ConfirmDialogComponent, FaqComponent } from './faq/faq.component';
     WebinfoComponent,
     ContactMessagesComponent,
     FaqComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ClientInquiriesComponent
   ],
 })
 export class UicomponentsModule {}

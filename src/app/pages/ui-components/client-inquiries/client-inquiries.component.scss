@@ -1,0 +1,161 @@
+$custom-primary: #a5aaaf;
+
+@use 'sass:color';
+
+.inquiries-card {
+  max-width: 100%;
+  margin: 1rem auto;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  mat-card-header {
+    background: $custom-primary;
+    color: white;
+
+    mat-card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    mat-card-subtitle {
+      color: white;
+      opacity: 0.9;
+    }
+  }
+
+  mat-card-content {
+    padding: 1.5rem;
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .search-field {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+.load-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #b42318;
+  padding: 1rem 0;
+}
+
+.responsive-table {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    min-width: 900px;
+  }
+
+  th.mat-mdc-header-cell {
+    background: color.scale($custom-primary, $lightness: 30%);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+tr.row-hover {
+  cursor: pointer;
+
+  &:hover {
+    background: #f7f7f8;
+  }
+  &.is-new td:first-child {
+    box-shadow: inset 3px 0 0 #5d87ff;
+  }
+  &.is-expanded td {
+    border-bottom-color: transparent;
+  }
+}
+
+tr.details-row {
+  height: 0;
+
+  &.collapsed td {
+    border-bottom-width: 0;
+    padding: 0;
+  }
+}
+
+.details {
+  padding: 0.5rem 0 1.25rem;
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem 2rem;
+    margin: 0;
+  }
+  .wide {
+    grid-column: 1 / -1;
+  }
+  dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+  }
+  dd {
+    margin: 0;
+  }
+  .multiline {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.status-select {
+  width: 140px;
+}
+
+td.mat-column-actions {
+  white-space: nowrap;
+}
+
+.status-new {
+  font-weight: 600;
+  color: #5d87ff;
+}
+.status-contacted {
+  color: #b54708;
+}
+.status-closed {
+  color: #027a48;
+}
+
+.no-data {
+  text-align: center;
+  color: gray;
+  padding: 2rem;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .inquiries-card mat-card-content {
+    padding: 1rem;
+  }
+  .toolbar .search-field {
+    max-width: none;
+  }
+}

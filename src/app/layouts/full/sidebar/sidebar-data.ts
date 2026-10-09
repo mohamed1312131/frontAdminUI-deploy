@@ -58,6 +58,11 @@ export const navItems: NavItem[] = [
     route: '/ui-components/contactMessages',
   },
   {
+    displayName: 'Client Inquiries',
+    iconName: 'calendar-event',
+    route: '/ui-components/clientInquiries',
+  },
+  {
     displayName: 'FAQs',
     iconName: 'message',            // ✔ Tabler: category
     route: '/ui-components/faq',

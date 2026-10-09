@@ -16,6 +16,7 @@ import { CategoryListComponent } from './category/category-list/category-list.co
 import { WebinfoComponent } from './webinfo/webinfo.component';
 import { ContactMessagesComponent } from './contact-messages/contact-messages.component';
 import { FaqComponent } from './faq/faq.component';
+import { ClientInquiriesComponent } from './client-inquiries/client-inquiries.component';
 export const UiComponentsRoutes: Routes = [
   {
     path: '',
@@ -67,6 +68,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path:'faq',
         component: FaqComponent
+      },
+      {
+        path:'clientInquiries',
+        component: ClientInquiriesComponent
       }
     ],
   },
